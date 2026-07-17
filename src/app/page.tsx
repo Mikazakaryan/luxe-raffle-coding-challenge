@@ -1,8 +1,5 @@
-import RafflesGrid from '@/components/raffles-grid/raffles-grid';
-import { getRaffles } from '@/server-functions/getRaffles';
+import Raffles from '@/components/raffles-grid/raffles';
 
-export default async function Home() {
-  const raffles = await getRaffles();
-
-  return <RafflesGrid raffles={raffles} />;
+export default function Home() {
+  return <Raffles />;
 }
