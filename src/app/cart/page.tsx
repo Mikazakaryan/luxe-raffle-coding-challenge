@@ -2,7 +2,7 @@ import {
   CartQuantityControls,
   RemoveFromCartButton,
 } from '@/components/cart/cart-item-actions';
-import { Button } from '@/components/ui/button';
+import { CheckoutButton } from '@/components/cart/checkout-button';
 import { getCart } from '@/server-functions/cart';
 import { getRaffles } from '@/server-functions/getRaffles';
 import Image from 'next/image';
@@ -74,9 +74,7 @@ export default async function CartPage() {
 
       <div className="flex items-center justify-between gap-4">
         <p className="text-lg font-semibold">Total: {total} €</p>
-        <Button variant="default" type="button">
-          Checkout
-        </Button>
+        <CheckoutButton disabled={cartItems.length === 0} />
       </div>
     </div>
   );

@@ -13,9 +13,13 @@ export type LoginState = {
   error: string | null;
 };
 
-export const getCurrentUser = async (): Promise<User | null> => {
+export const getAuthToken = async (): Promise<string | null> => {
   const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_COOKIE)?.value;
+  return cookieStore.get(TOKEN_COOKIE)?.value ?? null;
+};
+
+export const getCurrentUser = async (): Promise<User | null> => {
+  const token = await getAuthToken();
 
   if (!token) {
     return null;

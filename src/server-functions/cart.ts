@@ -80,3 +80,8 @@ export const removeFromCart = async (raffleId: number) => {
   await writeCartToCookie(nextCart);
   revalidatePath('/', 'layout');
 };
+
+export const clearCart = async () => {
+  await writeCartToCookie([]);
+  revalidatePath('/', 'layout');
+};
