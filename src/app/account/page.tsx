@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -9,21 +7,23 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { getCurrentUser, logout } from '@/server-functions/login';
 import { LogOut } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
-export default function AccountPage() {
-  const handleLogout = () => {
-    // TODO: Implement logout
-  };
+export default async function AccountPage() {
+  const user = await getCurrentUser();
 
-  const firstName = ''; // TODO: This should be the user's first name
+  if (!user) {
+    redirect('/login');
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl">Account Information</CardTitle>
-          <CardDescription>Welcome, {firstName}!</CardDescription>
+          <CardDescription>Welcome, {user.firstName}!</CardDescription>
         </CardHeader>
         <CardContent>
           <h3 className="text-xl font-semibold mb-4">Your Raffle Tickets</h3>
@@ -40,13 +40,11 @@ export default function AccountPage() {
           )} */}
         </CardContent>
         <CardFooter>
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-2 h-4 w-4" /> Logout
-          </Button>
+          <form action={logout} className="w-full">
+            <Button variant="destructive" className="w-full" type="submit">
+              <LogOut className="mr-2 h-4 w-4" /> Logout
+            </Button>
+          </form>
         </CardFooter>
       </Card>
     </div>

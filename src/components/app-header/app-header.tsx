@@ -1,4 +1,5 @@
 import { getCartItemCount } from '@/server-functions/cart';
+import { getCurrentUser } from '@/server-functions/login';
 import { ShoppingCart, User } from 'lucide-react';
 import Link from 'next/link';
 import { UserIcon } from '../user-icon/user-icon';
@@ -10,8 +11,11 @@ const CartCounter = ({ items }: { items: number }) => (
 );
 
 export const AppHeader = async () => {
-  const firstName = ''; // TODO: Somehow get this from the token
-  const amountOfCartItems = await getCartItemCount();
+  const [user, amountOfCartItems] = await Promise.all([
+    getCurrentUser(),
+    getCartItemCount(),
+  ]);
+  const firstName = user?.firstName ?? '';
 
   return (
     <header className="bg-white shadow-md">
