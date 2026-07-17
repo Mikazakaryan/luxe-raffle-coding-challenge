@@ -1,35 +1,10 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
+import { getCart } from '@/server-functions/cart';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import Image from 'next/image';
-import { useState } from 'react';
 
-interface CartItem {
-  id: number;
-  quantity: number;
-}
+export default async function CartPage() {
+  const items = await getCart();
 
-export default function CartPage() {
-  // TODO: This must come from the cart
-  const [items, setItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      quantity: 1,
-    },
-    {
-      id: 6,
-      quantity: 1,
-    },
-  ]);
-
-  const handleQuantityUpdate = (id: number, newQuantity: number) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item,
-      ),
-    );
-  };
 
   const handleRemove = () => {
     // TODO: Implement this
@@ -49,51 +24,26 @@ export default function CartPage() {
         ) : (
           <ul className="space-y-4">
             {items.map((item) => {
-              // TODO: We need to load data from the server somehow
-              const name = '';
-              const imageSrc = '';
+              const name = `Raffle #${item.id}`;
 
               return (
                 <li key={item.id} className="flex items-center space-x-4">
-                  <Image
-                    src={imageSrc}
-                    alt={name}
-                    width={80}
-                    height={60}
-                    className="rounded-md"
-                  />
+                  <div className="flex h-[60px] w-20 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
+                    #{item.id}
+                  </div>
                   <div className="flex-grow">
                     <h3 className="font-semibold">{name}</h3>
                     <div className="flex items-center space-x-2 mt-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          handleQuantityUpdate(
-                            item.id,
-                            Math.max(1, item.quantity - 1),
-                          )
-                        }
-                      >
+                      <Button variant="outline" size="icon" type="button">
                         <Minus className="h-4 w-4" />
                       </Button>
                       <span className="font-medium">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() =>
-                          handleQuantityUpdate(item.id, item.quantity + 1)
-                        }
-                      >
+                      <Button variant="outline" size="icon" type="button">
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => handleRemove()}
-                  >
+                  <Button variant="destructive" size="icon" type="button">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </li>
@@ -104,7 +54,7 @@ export default function CartPage() {
       </div>
 
       <div className="flex justify-end">
-        <Button variant="default" onClick={handleCheckout}>
+        <Button variant="default" type="button">
           Checkout
         </Button>
       </div>

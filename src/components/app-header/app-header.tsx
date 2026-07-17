@@ -1,3 +1,4 @@
+import { getCartItemCount } from '@/server-functions/cart';
 import { ShoppingCart, User } from 'lucide-react';
 import Link from 'next/link';
 import { UserIcon } from '../user-icon/user-icon';
@@ -10,7 +11,7 @@ const CartCounter = ({ items }: { items: number }) => (
 
 export const AppHeader = async () => {
   const firstName = ''; // TODO: Somehow get this from the token
-  const amountOfCartItems = 0; // TODO: Somehow get this from the cart
+  const amountOfCartItems = await getCartItemCount();
 
   return (
     <header className="bg-white shadow-md">

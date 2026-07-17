@@ -2,6 +2,7 @@ import { Raffle } from '@/types/Raffle';
 import Image from 'next/image';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import { AddToCartButton } from './add-to-cart-button';
 
 export default function RaffleTile({ raffle }: { raffle: Raffle }) {
   return (
@@ -28,7 +29,7 @@ export default function RaffleTile({ raffle }: { raffle: Raffle }) {
         <p className="text-gray-600 mb-4">{raffle.description}</p>
 
         <div className="flex justify-between">
-          <Button variant="outline">Add to Cart</Button>
+          <AddToCartButton raffleId={raffle.id} />
           <Button>View Details</Button>
         </div>
       </div>
