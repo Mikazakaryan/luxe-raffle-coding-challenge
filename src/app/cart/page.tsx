@@ -1,59 +1,79 @@
+import {
+  CartQuantityControls,
+  RemoveFromCartButton,
+} from '@/components/cart/cart-item-actions';
 import { Button } from '@/components/ui/button';
 import { getCart } from '@/server-functions/cart';
-import { Minus, Plus, Trash2 } from 'lucide-react';
+import { getRaffles } from '@/server-functions/getRaffles';
+import Image from 'next/image';
 
 export default async function CartPage() {
-  const items = await getCart();
+  const [items, raffles] = await Promise.all([getCart(), getRaffles()]);
 
+  const cartItems = items.flatMap((item) => {
+    const raffle = raffles.find((entry) => entry.id === item.id);
+    if (!raffle) {
+      return [];
+    }
 
-  const handleRemove = () => {
-    // TODO: Implement this
-  };
+    return [
+      {
+        id: item.id,
+        quantity: item.quantity,
+        name: raffle.name,
+        image: raffle.image,
+        description: raffle.description,
+        ticketPrice: raffle.ticketPrice,
+      },
+    ];
+  });
 
-  const handleCheckout = () => {
-    // TODO: Implement this. Redirect to /account
-  };
+  const total = cartItems.reduce(
+    (sum, item) => sum + item.ticketPrice * item.quantity,
+    0,
+  );
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
 
       <div className="mb-8">
-        {items.length === 0 ? (
+        {cartItems.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
           <ul className="space-y-4">
-            {items.map((item) => {
-              const name = `Raffle #${item.id}`;
-
-              return (
-                <li key={item.id} className="flex items-center space-x-4">
-                  <div className="flex h-[60px] w-20 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
-                    #{item.id}
-                  </div>
-                  <div className="flex-grow">
-                    <h3 className="font-semibold">{name}</h3>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <Button variant="outline" size="icon" type="button">
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="font-medium">{item.quantity}</span>
-                      <Button variant="outline" size="icon" type="button">
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <Button variant="destructive" size="icon" type="button">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </li>
-              );
-            })}
+            {cartItems.map((item) => (
+              <li key={item.id} className="flex items-center space-x-4">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={80}
+                  height={60}
+                  className="h-[60px] w-20 rounded-md object-cover"
+                />
+                <div className="flex-grow">
+                  <h3 className="font-semibold">{item.name}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {item.description}
+                  </p>
+                  <p className="text-sm mt-1">{item.ticketPrice} € / ticket</p>
+                  <CartQuantityControls
+                    raffleId={item.id}
+                    quantity={item.quantity}
+                  />
+                </div>
+                <p className="font-semibold whitespace-nowrap">
+                  {item.ticketPrice * item.quantity} €
+                </p>
+                <RemoveFromCartButton raffleId={item.id} />
+              </li>
+            ))}
           </ul>
         )}
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-lg font-semibold">Total: {total} €</p>
         <Button variant="default" type="button">
           Checkout
         </Button>

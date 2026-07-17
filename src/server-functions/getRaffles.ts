@@ -19,8 +19,5 @@ export const getRaffles = async () => {
     throw new Error('Received invalid raffle data from the server.');
   }
 
-  console.log('aaa', parsed.data);
-  
-
   return parsed.data;
 };

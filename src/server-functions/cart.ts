@@ -55,3 +55,28 @@ export const addToCart = async (raffleId: number) => {
   await writeCartToCookie(nextCart);
   revalidatePath('/', 'layout');
 };
+
+export const updateCartQuantity = async (
+  raffleId: number,
+  quantity: number,
+) => {
+  if (quantity < 1) {
+    return removeFromCart(raffleId);
+  }
+
+  const cart = await readCartFromCookie();
+  const nextCart = cart.map((item) =>
+    item.id === raffleId ? { ...item, quantity } : item,
+  );
+
+  await writeCartToCookie(nextCart);
+  revalidatePath('/', 'layout');
+};
+
+export const removeFromCart = async (raffleId: number) => {
+  const cart = await readCartFromCookie();
+  const nextCart = cart.filter((item) => item.id !== raffleId);
+
+  await writeCartToCookie(nextCart);
+  revalidatePath('/', 'layout');
+};
